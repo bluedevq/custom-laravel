@@ -3,6 +3,7 @@
 namespace App\Model\Entities;
 
 use App\Model\Base\Auth\UserAuthenticate;
+use App\Model\Base\Traits\CustomBuilder;
 
 /**
  * Class User
@@ -10,6 +11,8 @@ use App\Model\Base\Auth\UserAuthenticate;
  */
 class User extends UserAuthenticate
 {
+    use CustomBuilder;
+
     protected $table = 'users';
 
     protected $fillable = [];

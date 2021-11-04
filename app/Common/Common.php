@@ -215,3 +215,30 @@ if (!function_exists('getStatusColumn')) {
         return getSystemConfig('status_column.' . $key);
     }
 }
+
+if (!function_exists('sql_binding')) {
+
+    function sql_binding($sql, $bindings)
+    {
+        $boundSql = str_replace(['%', '?'], ['%%', '%s'], $sql);
+        $isConnectPgSql = \Illuminate\Support\Facades\DB::connection()->getDriverName() == 'pgsql';
+        foreach ($bindings as &$binding) {
+            if ($binding instanceof \DateTime) {
+                $binding = $binding->format('\'Y-m-d H:i:s\'');
+            } elseif (is_string($binding)) {
+                $binding = "'$binding'";
+            } elseif (is_bool($binding) && $isConnectPgSql) {
+                $binding = json_encode($binding);
+            }
+        }
+        $boundSql = vsprintf($boundSql, $bindings);
+        return $boundSql;
+    }
+}
+if (!function_exists('toSql')) {
+
+    function toSql($query)
+    {
+        return sql_binding($query->toSql(), $query->getBindings());
+    }
+}

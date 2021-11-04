@@ -1,3 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-Route::get('/', 'TestController@index');
+Route::get('/', [
+    'as' => 'frontend.index',
+    'uses' => 'TestController@index'
+]);
